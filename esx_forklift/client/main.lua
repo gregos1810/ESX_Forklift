@@ -1,12 +1,12 @@
 --******************************************
 --    ESX_FORKLIFT, BASED ON MY ESX_BUS   **
---	  									  **
+--	  			          **
 --    VERSION 0.0.0.0.0.0.0.0.0.0.0.0.1	  **
---	  									  **
+--	  				  **
 --     Coded and tested in ~2 hours so:   **
 --              - it's quite messy        **
 --              - might contain glitches  **
---			    - no localization         **
+--	        - no localization         **
 --                                        **
 --               ENJOY                    **
 --******************************************
@@ -41,7 +41,7 @@ local menuIsOpen = false   --if menu is displayed
 local taskPoints = {}	   --assigned task coordinates will be placed here
 local forkBlips = {}       --esx_forklift blips will be placed here
 local currentZone = 'none'
-local Blips = {}		   --GPS blip array
+local Blips = {}	   --GPS blip array
 local packetsDelivered = 0 --number of packets delivered
 local currentJob = 'none'  --current task (deliver or pickup)
 local currentBox = nil	   --store box
@@ -49,13 +49,13 @@ local currentBox = nil	   --store box
 local lastDelivery = nil   --last delivery index
 local lastPickup = nil	   --last pickup index
 
-local zOffset = -0.65	--how much below player Z the marker should be drawn *CURRENTLY NOT IN USE*
+local zOffset = -0.65	   --how much below player Z the marker should be drawn *CURRENTLY NOT IN USE*
 local hintToDisplay = "no hint to display"				--default to no hint
-local hintIsShowed = false								--default to hint hidden
+local hintIsShowed = false						--default to hint hidden
 --========================================--
 --==========JOB GLOBALS=================--
-local currentVehicle = nil												--store car spawned for player, idk if I am going to use this anyways
-local currentPlate = ''												--store plate for current car
+local currentVehicle = nil						--store car spawned for player, idk if I am going to use this anyways
+local currentPlate = ''							--store plate for current car
 
 --========================================--
 --===NON INTEGER INDEXED ARRAY FUNCTIONS==--
@@ -84,16 +84,16 @@ end
 --============NET EVENTS==================--
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)	--on player load		
-    playerData = xPlayer								--get player data from esx	
-    refreshBlips()										--refresh blips 
+    playerData = xPlayer				--get player data from esx	
+    refreshBlips()					--refresh blips 
 end)
 
 RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)	--when player changes jobs this will be triggered
-  playerData.job = job						--update previously acquired player data
-  onDuty = false							--set player as off-duty
-  deleteBlips()								--delete existing blips
-  refreshBlips()							--refresh blips
+AddEventHandler('esx:setJob', function(job)	        --when player changes jobs this will be triggered
+  playerData.job = job					--update previously acquired player data
+  onDuty = false					--set player as off-duty
+  deleteBlips()						--delete existing blips
+  refreshBlips()					--refresh blips
 end)
 
 --========================================--
@@ -103,23 +103,23 @@ function drawBlip(coords, icon, text)
   local blip = AddBlipForCoord(coords.x, coords.y, coords.z)	--create blip on map
   
   SetBlipSprite (blip, icon)		--set sprite 'image'
-  SetBlipDisplay(blip, 4)			--set blip display style
-  SetBlipScale  (blip, 0.9)			--set blip scale
-  SetBlipColour (blip, 3)			--set blip color
+  SetBlipDisplay(blip, 4)		--set blip display style
+  SetBlipScale  (blip, 0.9)		--set blip scale
+  SetBlipColour (blip, 3)		--set blip color
   SetBlipAsShortRange(blip, true)	--set visibility on mini-map to regular
 	
   BeginTextCommandSetBlipName("STRING")	
   AddTextComponentString(text)		--set text argument as blip name in game
   EndTextCommandSetBlipName(blip)	--quit
-  table.insert(forkBlips, blip)	    --insert to busBlips table where it can later be accessed and removed
+  table.insert(forkBlips, blip)	        --insert to busBlips table where it can later be accessed and removed
 
 end
 
 function refreshBlips()
 	if playerData.job.name ~= nil and playerData.job.name == 'fork' then 	--if player is a bus 
-		drawBlip(Config.locker, 280, "Trukkikuskin pukukoppi")			 	--draw locker room on the map
-		drawBlip(Config.carSpawner, 479, "Trukin lunastus")					--draw job starting point
-		drawBlip(Config.carDelete, 490, "Trukin palautus")					--draw checkout point 
+		drawBlip(Config.locker, 280, "Trukkikuskin pukukoppi")		--draw locker room on the map
+		drawBlip(Config.carSpawner, 479, "Trukin lunastus")		--draw job starting point
+		drawBlip(Config.carDelete, 490, "Trukin palautus")		--draw checkout point 
 	end
 end
 
@@ -135,11 +135,11 @@ end
 --========================================--
 --=============TOP LEFT HINT==============--
 Citizen.CreateThread(function()
-  while true do										--loop like there is no tomorrow
+  while true do						--loop like there is no tomorrow
     Citizen.Wait(1)
-    if hintIsShowed then							--if hint should be drawn
-      SetTextComponentFormat("STRING")				--component format -> string
-      AddTextComponentString(hintToDisplay)			--get text from global variable
+    if hintIsShowed then				--if hint should be drawn
+      SetTextComponentFormat("STRING")			--component format -> string
+      AddTextComponentString(hintToDisplay)		--get text from global variable
       DisplayHelpTextFromStringLabel(0, 0, 1, -1)	--set it loose
     end
   end
@@ -159,10 +159,10 @@ function isMyCar()
 	end
 end
 
-function spawnFork()							--spawns forklift
+function spawnFork()				        --spawns a forklift
 	
 	local vehicleModel = GetHashKey('forklift')	--get hash key of forklift
-	RequestModel(vehicleModel)					--request model by hash
+	RequestModel(vehicleModel)			--request model by hash
 	
 	while not HasModelLoaded(vehicleModel) do	--wait until the model has been loaded by ?client?
 		Citizen.Wait(0)
@@ -336,29 +336,29 @@ end
 
 function deleteCar()
 	local entity = GetVehiclePedIsIn(GetPlayerPed(-1), false)	--get vehicle player is in
-	ESX.Game.DeleteVehicle(entity)								--delete it
+	ESX.Game.DeleteVehicle(entity)					--delete it
 end
 
 function getPaid()
-	setGPS(0)													--rip gps
+	setGPS(0)							--rip gps
 	local playerPed = GetPlayerPed(-1)
-	if IsPedInAnyVehicle(playerPed) and isMyCar() then			--player successfully returned the bus
-		deleteCar()												--delete players car
-		TriggerServerEvent('esx_fork:getPaid', packetsDelivered * Config.pay) --pay accordingly
-	else														--if player didn't return the forklift
+	if IsPedInAnyVehicle(playerPed) and isMyCar() then		--player successfully returned the bus
+		deleteCar()								--delete players car
+		TriggerServerEvent('esx_fork:getPaid', packetsDelivered * Config.pay)   --pay accordingly
+	else										--if player didn't return the forklift
 		ESX.ShowNotification('~r~Missä trukki?')
-		local amount = 400										--charge 100-400 EUR
-		if packetsDelivered < 2 then							--if player delivered less than 2 packets
-			amount = 1200										--charge 900-1200 EUR
+		local amount = 400							--charge 100-400 EUR
+		if packetsDelivered < 2 then						--if player delivered less than 2 packets
+			amount = 1200							--charge 900-1200 EUR
 		end
 		ESX.ShowNotification('~w~Voittosumma: ~r~ -' .. amount .. ' ~w~euroa.')
 	end
-	currentJob = 'none'												--reset current mission
-	currentPlate = ''												--reset current plate
-	currentVehicle = nil											--remove current vehicle from variables
-	packetsDelivered = 0											--reset packetsDelivered
-	taskPoints = {}													--reset taskPoints
-	deleteCurrentBox()												--delete last box spawned by player
+	currentJob = 'none'								--reset current mission
+	currentPlate = ''								--reset current plate
+	currentVehicle = nil								--remove current vehicle from variables
+	packetsDelivered = 0								--reset packetsDelivered
+	taskPoints = {}									--reset taskPoints
+	deleteCurrentBox()								--delete last box spawned by player
 end
 
 --=========IF NEXT POINT IS FAR ENOUGH===--
@@ -370,18 +370,18 @@ end
 --========================================--
 --==========SET GPS TO NEXT===============--
 function setGPS(coords)
-	if Blips['fork'] ~= nil then 	--if blips clean exists
+	if Blips['fork'] ~= nil then 	        --if blips exists
 		RemoveBlip(Blips['fork'])	--remove
-		Blips['fork'] = nil			--remove from table 'assigning a nil value to a table variable will remove that variable in lua'
+		Blips['fork'] = nil    --remove from table 'assigning a nil value to a table variable will remove that variable in lua'
 	end
 	if coords ~= 0 then
-		Blips['fork'] = AddBlipForCoord(coords.x, coords.y, coords.z)		--add new blip on the map
-		SetBlipRoute(Blips['buzz'], true)									--set GPS to point this blip
+		Blips['fork'] = AddBlipForCoord(coords.x, coords.y, coords.z)	--add new blip on the map
+		SetBlipRoute(Blips['buzz'], true)				--set GPS to point this blip
 	end
 end
 --========================================--
 --======IF PLAYER IS INSIDE MARKER========--
-function playerIsInside(coords, distance) 	--check whether player is inside a marker
+function playerIsInside(coords, distance) 	        --check whether player is inside a marker
 	local playerCoords = GetEntityCoords(GetPlayerPed(-1))
 	local vecDiffrence = GetDistanceBetweenCoords(playerCoords, coords.x, coords.y, coords.z, false)
 	return vecDiffrence < distance			--returns true if player is within the given distance
@@ -486,24 +486,24 @@ Citizen.CreateThread(function()
 end)
 --========================================--
 --===============MENU=====================--
-function openMenu()									--I have added comments and made some minor changes
+function openMenu()								
   menuIsOpen = true
-  ESX.UI.Menu.CloseAll()							--Close everything ESX.Menu related				
+  ESX.UI.Menu.CloseAll()					--Close everything ESX.Menu related				
 
   ESX.UI.Menu.Open(
-    'default', GetCurrentResourceName(), 'locker',			--locker room menu
+    'default', GetCurrentResourceName(), 'locker',		--locker room menu
     {
-      title    = "Pukukoppi",								--set title
+      title    = "Pukukoppi",					--set title
       elements = {
         {label = "Työvaatteet", value = 'fork_wear'},		--work clothes selection
         {label = "Arkivaatteet", value = 'everyday_wear'}	--everyday clothes selection
       }
     },
-    function(data, menu)									--on data selection
+    function(data, menu)						--on data selection
       if data.current.value == 'everyday_wear' then			--if everyday clothes are selected
-        onDuty = false										--GTFO duty
+        onDuty = false								--GTFO duty
         ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)	--call ESX_Skin to get desired skin
-            TriggerEvent('skinchanger:loadSkin', skin)						--after receiving cb, load skin on player
+            TriggerEvent('skinchanger:loadSkin', skin)				--after receiving cb, load skin on player
         end)
       end
       if data.current.value == 'fork_wear' then
@@ -516,7 +516,7 @@ function openMenu()									--I have added comments and made some minor changes
           end
         end)
       end
-      menu.close()											--close menu after selection
+      menu.close()							--close menu after selection
 	  menuIsOpen = false
     end,
     function(data, menu)
