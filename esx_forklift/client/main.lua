@@ -342,7 +342,7 @@ end
 function getPaid()
 	setGPS(0)							--rip gps
 	local playerPed = GetPlayerPed(-1)
-	if IsPedInAnyVehicle(playerPed) and isMyCar() then		--player successfully returned the bus
+	if IsPedInAnyVehicle(playerPed) and isMyCar() then		--player successfully returned the forklift
 		deleteCar()								--delete players car
 		TriggerServerEvent('esx_fork:getPaid', packetsDelivered * Config.pay)   --pay accordingly
 	else										--if player didn't return the forklift
